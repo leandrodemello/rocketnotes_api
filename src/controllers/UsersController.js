@@ -3,6 +3,8 @@ const AppError = require("../utils/AppError");
 const sqliteConnection = require("../database/sqlite")
 
 class UsersController {
+
+  //funcionalidade de criação do usuário
   async create(request, response) {
     const { name, email, password } = request.body;
 
@@ -24,25 +26,30 @@ class UsersController {
     return response.status(201).json();
   }
 
+  //funcionalidade de atualização do usuário
   async update (request, response) {
-    const { name, email, password, old_password } = request.body
+    const { name, email, password, old_password } = request.body;
     const { id } = request.params;
 
-    const database = await sqliteConnection();
-    const user = await database.get("SELECT * FROM users WHERE id = ?", [id]);
+    //Conecção com o banco de dados
+    const database = await sqliteConnection();  
+    //buscar pelo usuário (selecione todos os dados da tabela de usuários onde o id seja =)
+    const user = await database.get("SELECT * FROM users WHERE id = (?)", [id]); 
 
-    if (!user) {
+    if (!user) { //se o usuário não existir...
       throw new AppError("Usuário não encontrado.");
     }
 
+    // verificar se o email atualizado já existe
     const userWithUpdatedEmail = await database.get("SELECT * FROM users WHERE email = (?)", [email]);
 
-    if(userWithUpdatedEmail && userWithUpdatedEmail.id !== id) {
+    // se já existir, mostrar msg de error
+    if(userWithUpdatedEmail && userWithUpdatedEmail.id !== user.id) {
       throw new AppError("Este e-mail já está em  uso.");
     }
 
-    user.name = name;
-    user.email = email;
+    user.name = name ?? user.name; //?? verifica se tem conteúdo, se não tem permanece o que já tinha
+    user.email = email ?? user.email;
 
     if( password && !old_password ) {
       throw new AppError("Você precisa informar a senha antiga para definir uma nova senha.");
@@ -51,19 +58,22 @@ class UsersController {
     if( password && old_password ) {
       const checkOldPassword =  await compare(old_password, user.password);
 
-      if(!checkOldPassword) throw new AppError("A senha antiga não confere.");
+      if(!checkOldPassword) {
+        throw new AppError("A senha antiga não confere.");
+      }
 
       user.password = await hash(password, 8);
     }
 
+    // atualize na tabela de usuário e defina os seguintes dados
     await database.run(`
     UPDATE users SET 
     name = ?, 
     email = ?,
     password = ?, 
-    updated_at = ? 
+    updated_at = DATETIME('now')
     WHERE id = ?`, 
-    [user.name, user.email, user.password, new Data (), id]);
+    [user.name, user.email, user.password, id]);
 
     return response.json();
   }
