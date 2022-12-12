@@ -43,7 +43,7 @@ class UsersController {
     // verificar se o email atualizado já existe
     const userWithUpdatedEmail = await database.get("SELECT * FROM users WHERE email = (?)", [email]);
 
-    // se já existir, mostrar msg de error
+    // se já existir, mostrar msg de ...
     if(userWithUpdatedEmail && userWithUpdatedEmail.id !== user.id) {
       throw new AppError("Este e-mail já está em  uso.");
     }
