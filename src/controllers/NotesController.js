@@ -1,7 +1,7 @@
 const knex = require("../database/knex");
 
 class NotesController {
-  async create(request, response) {
+  async create(request, response) { //funcionalidade de criação de notas, tags e links
       const { title, description, tags, links } = request.body;
       const { user_id } = request.params;
 
