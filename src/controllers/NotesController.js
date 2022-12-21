@@ -54,14 +54,28 @@ class NotesController {
     return response.json();
   }
 
-  async index(request, response){ //Funciona
-    const { user_id } = request.query;
+  async index(request, response){ //Funcionalidade para pesquisa
+    const { title, user_id, tags } = request.query;
 
-    const notes = await knex("notes").where({ user_id }).orderBy("title");
+    let notes;
+
+    if (tags) {
+      const filterTags = tags.split(',').map(tag => tag.trim());
+
+      notes = await knex("tags")
+        .whereIn("name", filterTags)
+
+    } else{
+    const notes = await knex("notes")
+      .where({ user_id })
+      .whereLike("title", `%${title}%`) //Operador "Like" faz a busca pela palavra
+      .orderBy("title");
+    }
 
    
     return response.json(notes);
   }
 }
+
 
 module.exports = NotesController;
