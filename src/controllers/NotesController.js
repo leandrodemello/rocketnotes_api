@@ -64,20 +64,20 @@ class NotesController {
 
       notes = await knex("tags")
         .select([
-          "notes.id",
-          "notes.title",
-          "notes.user_id"
+         "notes.id",
+         "notes.title",
+         "notes.user_id"
         ])
-        .where("notes.user_id", user_id)
-        .whereLike("notes.title", `%${title}%`)
-        .whereIn("name", filterTags)
-        .innerJoin("notes", "notes.id", "tags.note_id")
-        .orderBy("notes.title")
+      .where("notes.user_id", user_id)
+      .whereLike("notes.title", `%${title}%`)
+      .whereIn("name", filterTags)
+      .innerJoin("notes", "notes.id", "tags.note_id")
+      .orderBy("notes.title")
 
-    } else{
-    const notes = await knex("notes")
+    } else {
+    notes = await knex("notes")
       .where({ user_id })
-      .whereLike("title", `%${title}%`) //Operador "Like" faz a busca pela palavra
+      .whereLike("title", `%${title}%`)
       .orderBy("title");
     }
 
@@ -92,7 +92,7 @@ class NotesController {
     });
 
     return response.json(notesWithTags);
-  }
+      }
 }
 
 
