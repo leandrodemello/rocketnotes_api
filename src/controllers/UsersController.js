@@ -29,12 +29,12 @@ class UsersController {
   //funcionalidade de atualização do usuário
   async update (request, response) {
     const { name, email, password, old_password } = request.body;
-    const { id } = request.params;
+    const user_id = request.user.id;
 
     //Conecção com o banco de dados
     const database = await sqliteConnection();  
     //buscar pelo usuário (selecione todos os dados da tabela de usuários onde o id seja =)
-    const user = await database.get("SELECT * FROM users WHERE id = (?)", [id]); 
+    const user = await database.get("SELECT * FROM users WHERE id = (?)", [user_id]); 
 
     if (!user) { //se o usuário não existir...
       throw new AppError("Usuário não encontrado.");
@@ -73,7 +73,7 @@ class UsersController {
     password = ?, 
     updated_at = DATETIME('now')
     WHERE id = ?`, 
-    [user.name, user.email, user.password, id]);
+    [user.name, user.email, user.password, user.id]);
 
     return response.json();
   }
