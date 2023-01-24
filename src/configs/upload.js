@@ -1,8 +1,9 @@
 const path = require("path");
-const  multer = require("multer")
+const  multer = require("multer");
+const crypto = require("crypto");
 
-const TMP_FOLDER = path.resolver(__dirname, "..", "..", "tmp");//ONDE A IMAGEM CHEGA
-const UPLOADS_FOLDER = path.resolve(__dirname, "uploads"); //ONDE A IMAGEM REALMENTE VAI FICAR
+const TMP_FOLDER = path.resolve(__dirname, "..", "..", "tmp");//ONDE A IMAGEM CHEGA
+const UPLOADS_FOLDER = path.resolve(TMP_FOLDER, "uploads"); //ONDE A IMAGEM REALMENTE VAI FICAR
 
 const MULTER = {  //BIBLIOTECA PARA FAZER O UPLOAD
    storage: multer.diskStorage({
