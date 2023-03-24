@@ -1,15 +1,15 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "API criada no explorer",
+  "description": "API desenvolvida no programa Explorer da Rocketseat",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
     "dev": "nodemon ./src/server.js",
     "migrate": "knex migrate:latest"
   },
   "keywords": [],
-  "author": "Leandro Mello",
+  "author": "Leandro Silva de Melo",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.0",
     "knex": "^2.3.0",
     "multer": "^1.4.5-lts.1",
+    "pm2": "^5.3.0",
     "sqlite": "^4.1.2",
     "sqlite3": "^5.1.2"
   },
